@@ -1,0 +1,106 @@
+/* Syntax Chroma base sheet */
+code {
+    /* structure */
+    display: block;
+    white-space: pre-line;
+    padding: 0px 0px 0px 6px;
+    position: relative; /* keep code selection inside the code block */
+    
+    /* font specifications
+       Windows: Consolas (not free, but bundled with many MS products )
+           Mac: Monaco (free default monospace font for Mac)
+         Linux: Droid Sans Mono or Liberation Mono (default Linux font?)
+       default: Courier New
+    */
+    font-family: Consolas, Monaco, "Droid Sans Mono", "Liberation Mono", "Courier New", sans-serif;
+    font-size: .85em;
+    
+    /* base theme colors and styles */
+    color: #333;
+    background: #efefef;
+    border: 1px solid #D4D6DB;
+    border-left-width: 40px;
+    vertical-align: baseline;
+}
+
+code:hover {
+    border-color: #becadb;
+}
+
+code ol {
+    position: relative;
+    margin: 0 0 0 -5px;
+    padding: 0 0 0 0;
+}
+
+code li {
+    padding: 2px 5px;
+}
+
+code li.js-wrapper {
+    color: #666;
+}
+
+code li:hover {
+    background: #D9FFD2 !important;
+    -webkit-transition: background 500ms ease-out;
+       -moz-transition: background 500ms ease-out;
+        -ms-transition: background 500ms ease-out;
+         -o-transition: background 500ms ease-out;
+            transition: background 500ms ease-out;
+}
+
+code li .val {
+    color: #2AA503;
+}
+
+span.keyword {
+    color: #B64C05;
+}
+
+/* alternate row styles */
+code.rows-alternate li:nth-child(even) {
+    background: #E7E7E7;
+}
+
+/* JS-specific styling */
+code[data-lang="JS"] span.keyword {
+    color: #000;
+    font-weight: bold;
+}
+
+span.method {
+    color: #075ABF;
+}
+
+span.reserved,
+span.reserved * {
+    color: #058800 !important;
+}
+
+span.html-tag {
+    color: #075ABF;
+}
+
+span.css-dec {
+    color: #09F;
+}
+
+span.css-vals {
+    color: #f60;
+}
+
+span.css-attr-sel {
+    color: #B535CE;
+}
+
+.comment,
+.comment * {
+    color: #999 !important;
+}
+/* override keywords appearing within comments */
+.comment span.keywords,
+.comment span.method,
+.comment span.reserved {
+    color: inherit !important;
+}

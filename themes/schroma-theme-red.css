@@ -1,0 +1,117 @@
+/* Syntax Chroma Blue Theme */
+/* @author Arthur Khachatryan */
+
+/* code block and rows */
+code {
+    background: #661117;
+    color: #f6f6f6;
+    border-color: #830000;
+}
+
+code:hover {
+    border-color: #B81421;
+}
+
+/* generic alternate row styles */
+code.rows-alternate li:nth-child(even) {
+    background: #5F0F0F;
+}
+
+code li.js-wrapper {
+    color: #000;
+}
+
+code li:hover {
+    background: #7E0E16 !important;
+    -webkit-transition: background 500ms ease-out;
+       -moz-transition: background 500ms ease-out;
+        -ms-transition: background 500ms ease-out;
+         -o-transition: background 500ms ease-out;
+            transition: background 500ms ease-out;
+}
+
+/**********************/
+/** Generic Styling ***/
+/**********************/
+
+/* line numbers */
+code ol,
+code ul {
+    color: #fff;
+}
+
+/* default code - inherits from line numbers */
+li span.line {
+    color: #c7c7c7;
+}
+
+/* values inside quotes */
+code li .val {
+    color: #ece17f;
+}
+
+/* generic keyword group coloring */
+span.keyword {
+    color: #e4cd3e;
+}
+
+/* generic method styling */
+span.method {
+    color: #97c0f3;
+}
+
+/* generic values inside double quotes */
+span.reserved,
+span.reserved * {
+    color: #9acc98 !important;
+    /*background: #CAFFC8;*/
+}
+
+/* generic comment styles */
+.comment,
+.comment * {
+    color: #777 !important;
+}
+
+/**********************/
+/* Javascript Styling */
+/**********************/
+
+/* JS keyword styling */
+code[data-lang="JS"] span.keyword {
+    color: #e6cb5d;
+    font-weight: bold;
+}
+
+/**********************/
+/**** CSS Styling *****/
+/**********************/
+
+/* #ID selector */
+code[data-lang="CSS"] span.method {
+    color: #CFB80B;
+}
+
+/* CSS declaration styles */
+span.css-dec {
+    color: #b4caeb;
+}
+/* CSS style values styles */
+span.css-vals {
+    color: #DDE3EE;
+}
+
+/* CSS attribute selector styles */
+span.css-attr-sel {
+    color: #cb90cb;
+}
+
+/**********************/
+/**** HTML Styling ****/
+/**********************/
+
+/* HTML tags */
+span.html-tag {
+    color: #eede46;
+}
+

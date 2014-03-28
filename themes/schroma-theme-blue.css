@@ -1,0 +1,81 @@
+/* Syntax Chroma Blue Theme */
+/* @author Arthur Khachatryan */
+
+code {
+    border-color: #88ABD6;
+}
+
+code:hover {
+    border-color: #97BDEB;
+}
+
+code li.js-wrapper {
+    color: #666;
+}
+
+code li:hover {
+    background: #D1DDEB !important;
+    -webkit-transition: background 500ms ease-out;
+       -moz-transition: background 500ms ease-out;
+        -ms-transition: background 500ms ease-out;
+         -o-transition: background 500ms ease-out;
+            transition: background 500ms ease-out;
+}
+
+/* values inside quotes */
+code li .val {
+    color: #88ABD6;
+}
+
+/* generic keyword group coloring */
+span.keyword {
+    color: #B64C05;
+}
+
+/* generic alternate row styles */
+code.rows-alternate li:nth-child(even) {
+    background: #E4E9F0;
+}
+
+/* JS-specific keyword styling */
+code[data-lang="JS"] span.keyword {
+    color: #000;
+    font-weight: bold;
+}
+
+/* generic method styling */
+span.method {
+    color: #075ABF;
+}
+
+/* generic values inside double quotes */
+span.gen,
+span.gen * {
+    color: #718fb3 !important;
+    /*background: #CAFFC8;*/
+}
+
+/* HTML-tag specific styles */
+span.html-tag {
+    color: #075ABF;
+}
+
+/* CSS declaration styles */
+span.css-dec {
+    color: #718fb3;
+}
+/* CSS style values styles */
+span.css-vals {
+    color: #C78C65;
+}
+
+/* CSS attribute selector styles */
+span.css-attr-sel {
+    color: #B535CE;
+}
+
+/* generic comment styles */
+.comment,
+.comment * {
+    color: #999 !important;
+}

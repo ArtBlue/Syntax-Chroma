@@ -1,0 +1,150 @@
+<!doctype html>
+<html>
+<head>
+    <title>Syntax Chroma jQuery Extension</title>
+	<meta charset="utf8">
+	<meta name="author" content="Arthur Khachatryan">
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+	<script type="text/javascript" src="syntax-chroma.min.js"></script>
+    <link type="text/css" rel="stylesheet" href="themes/schroma-base.css">
+    <!-- theme options, uncomment to apply theme -->
+	<!--<link type="text/css" rel="stylesheet" href="themes/chroma-theme-blue.css">-->
+	<!--<link type="text/css" rel="stylesheet" href="themes/chroma-theme-dark.css">-->
+	<!--<link type="text/css" rel="stylesheet" href="themes/chroma-theme-red.css">-->
+</head>
+<body>
+    <div class="container">
+        <h1>Syntax Chroma jQuery Extension</h1>
+        <h2>A modern, simple, unobtrusive code syntax color highlighter</h2>
+        
+        <h3>Plain Text Chroma</h3>
+        <code>
+This is a simple text Chroma.
+The indentation persists to give the user control over the look and feel,
+but no styling is applied to it.
+			
+It abides by carriage returns and new paragraphs.
+        </code>
+        
+        <h3>JS Syntax Chroma</h3>
+        <code class="rows-alternate" data-lang="JS" data-code-wrapper="1">
+/* jQuery .ready */
+$(function() {
+    $(this).changeUriParam("param3","77"); /* change param 3 to 77 */
+});
+
+/**
+* @extends String via prototype
+*/
+String.prototype.repeat= function(x){
+    x = x || 1;
+    alert('test');
+    return Array(x+1).join(this); // inline comments
+}
+// end of code
+        </code>
+        
+        <h3>PHP Syntax Chroma</h3>
+        <code data-lang="PHP" data-code-wrapper="1">
+class Example extends CI_Controller {
+
+	function __construct() // this function allows you to load things you can use in all other functions in this class
+    {
+        parent::__construct();
+		
+	}
+	
+	function index()
+	{
+		// load libraries
+		$this->load->library(array("session", "form_validation"));
+
+		// load helper
+		$this->load->helper("form");
+
+		// setup form validation
+		$this->form_validation->set_rules("name",    "name",    "required");
+		$this->form_validation->set_rules("email",   "email",   "valid_email");
+		$this->form_validation->set_rules("url",     "url",     "prep_url");
+		$this->form_validation->set_rules("captcha", "captcha", "required|callback_check_captcha");
+		$this->form_validation->set_rules("comment", "comment", "required");
+
+		if( $this->form_validation->run() )
+		{
+			// create comment
+			die("Validated!");
+		}
+
+		// setup textCAPTCHA
+
+			$xml = @new SimpleXMLElement("http://textcaptcha.com/api/your_api_key", NULL, TRUE);
+
+
+		// store answers in session for use later
+		$answers = array();
+		foreach( $xml->answer as $hash )
+		{
+			$answers[] = (string)$hash;
+		}
+		$this->session->set_userdata("captcha_answers", $answers);
+
+		// load vars into view
+		$this->load->vars(array( "captcha" => (string)$xml->question ));
+
+		// load the view
+		$this->load->view("example");
+	}
+
+	function check_captcha( $string )
+	{
+		$user_answer = md5(strtolower(trim($string)));
+		$answers = $this->session->userdata("captcha_answers");
+
+		if( in_array($user_answer, $answers) )
+		{
+			return TRUE;
+		}
+		else
+		{
+			$this->form_validation->set_message("check_captcha", "Your answer was incorrect!");
+			return FALSE;
+		}
+	}
+}
+        </code>
+        
+        <h3>CSS Syntax Chroma</h3>
+        <code data-lang="CSS" data-code-wrapper="1">
+        span {
+            color: red;
+            background: white;
+        }
+        #theid {
+            padding: 5px 10px; /* top and bottom - right and left  */
+            margin: 1px 2px 3px 4px;
+        }
+        #theid.class {
+            padding: 5px 10px;
+            margin: 1px 2px 3px 4px;
+        }
+        .class {
+            font-size: 1px;
+        }
+        .class.class2{
+            font-size: 1px;
+        }
+        #theid div {
+            padding: 5px 10px;
+            margin: 1px 2px 3px 4px;
+        }
+        .class div{
+            font-size: 1px;
+        }
+        p [title^="Hello"] {
+            color:red;
+        }
+        </code>
+        
+    </div>
+</body>
+</html>
