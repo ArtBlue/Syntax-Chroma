@@ -6,7 +6,8 @@ _A modern, lightweight, unobtrusive, themable jQuery syntax highlighter extensio
 * Simple - easy to set up and use
 * Beautiful - code does not need to look ugly
 * Lightweight - only 4K
-* Fast - rendering (no highlighting lag)
+* Fast - quick rendering with no highlighting lag due to processing
+* Legible - use of stylistic monospace fonts
 * Semantic - no weird file inclusions, workarounds, odd markup as with other highlighters
 * Support for `HTML`, `CSS`, `JS`, `PHP`
 * Themes - you may use any of the pre-built themes provided or write your own
@@ -53,6 +54,9 @@ If `data-lang` is not provided, Syntax Highlighter will assume plain text, and t
 ````
 
 ### Options and Customizations
+#### Fonts
+Research into the best fonts to use for code, and the availability of those fonts on various platforms, yielded the best set of font faces to use: `Consolas, Monaco, "Droid Sans Mono", "Liberation Mono", "Courier New", sans-serif;` There are numerous fallback fonts specified, the fallback order following the pattern of most supported to least.
+
 #### Custom Tags
 You may customize the tags that will have highlighting applied by doing the following:
 ```` JS
