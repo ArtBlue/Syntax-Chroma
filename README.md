@@ -3,9 +3,10 @@
 _A modern, lightweight, unobtrusive, themable jQuery syntax highlighter extension_.
 
 ## Features
+Syntax Chroma is currently in alpha, so don't be surprised to find various bugs. All currently known issues are listed towards the bottom. Please do report unknown issues to improve Syntax Chroma. That said, there are still good reasons why this particular solution is a good choice for syntax highlighting on web pages. Some of the features that makes it so are as follows:
 * Simple - easy to set up and use
 * Beautiful - code does not need to look ugly
-* Lightweight - only 4K
+* Lightweight - only 4.47K
 * Fast - quick rendering with no highlighting lag due to processing
 * Legible - use of stylistic monospace fonts
 * Semantic - no weird file inclusions, workarounds, odd markup as with other highlighters
