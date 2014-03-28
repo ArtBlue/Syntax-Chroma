@@ -52,6 +52,7 @@ If `data-lang` is not provided, Syntax Highlighter will assume plain text, and t
 })(jQuery); // ensure $ = jQuery
   </code>
 ````
+Obviously, this being a jQuery extension, it requires the jQuery library in order to work.
 
 ### Options and Customizations
 #### Fonts
