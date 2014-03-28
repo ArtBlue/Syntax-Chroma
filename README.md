@@ -90,7 +90,9 @@ var me = "Arthur";
 ````
 
 #### Themes
-Look inside `/themes/` for all the themes provided. By swapping out the specific theme CSS file inclusion, you would be swapping out the themes for all the places on your page where Syntax Chroma is highlighting syntax. To write your own theme simply follow the patterns you will find in the provided themes. Please bare in mind that the `chroma-base.css` file needs to remain as-is, otherwise you may start seeing odd things on your web pages. The base styling was separated from the themable stylesheet to provide flexibility where available, while at the same time to retain the styling critical to the proper functioning of the extension.
+The base stylesheet of Syntax Chroma comes with a default look and feel. However, you may apply a different theme, if you'd like. Look inside `/themes/` for all the themes provided. You may apply a theme by including the additional theme CSS file, and this will impact all the places on your page where Syntax Chroma is highlighting syntax. 
+
+To write your own theme simply follow the patterns you will find in the provided themes. Please bare in mind that the `chroma-base.css` file needs to remain as-is, otherwise you may start seeing odd things on your web pages. The base styling was separated from the themable stylesheet to provide flexibility where available, while at the same time to retain the styling critical to the proper functioning of the extension.
 
 ### Known Issues
 * Because no 100% failsafe regular expression exists for HTML markup, some HTML highlighting will be off. Some tags will fail to get highlighted. In other instances highlighting will be incomplete. There are currently known bugs, and there are improvements that can be made to shorten the gap between what is possible and what is perfect.
