@@ -3,16 +3,18 @@
 _A modern, lightweight, unobtrusive, themable jQuery syntax highlighter extension_.
 
 ## Features
-* simple to use
-* lightweight (only 4K)
-* fast rendering (no highlighting lag)
-* semantic (no weird file inclusions, workarounds, odd markup as with other highlighters)
-* support for 
-  * `HTML`
-  * `CSS`
-  * `JS`
-  * `PHP`
-* COMING SOON! Ability to extend syntax highlighting to add your own languages and keyword scopes.
+* Simple - easy to set up and use
+* Beautiful - code does not need to look ugly
+* Lightweight - only 4K
+* Fast - rendering (no highlighting lag)
+* Semantic - no weird file inclusions, workarounds, odd markup as with other highlighters
+* Support for `HTML`, `CSS`, `JS`, `PHP`
+* Themes - you may use any of the pre-built themes provided or write your own
+ 
+Coming Soon!
+
+* Ability to extend the dictionary to add your own languages and keyword scopes.
+* Ability to copy all of the code inside the tag.
 
 ### Under the Hood
 Syntax Chroma utilizes the following:
@@ -50,7 +52,7 @@ If `data-lang` is not provided, Syntax Highlighter will assume plain text, and t
   </code>
 ````
 
-### Additional Options
+### Options and Customizations
 #### Custom Tags
 You may customize the tags that will have highlighting applied by doing the following:
 ```` JS
@@ -87,6 +89,8 @@ var me = "Arthur";
 </script>
 ````
 
+#### Themes
+Look inside `/themes/` for all the themes provided. By swapping out the specific theme CSS file inclusion, you would be swapping out the themes for all the places on your page where Syntax Chroma is highlighting syntax. To write your own theme simply follow the patterns you will find in the provided themes. Please bare in mind that the `chroma-base.css` file needs to remain as-is, otherwise you may start seeing odd things on your web pages. The base styling was separated from the themable stylesheet to provide flexibility where available, while at the same time to retain the styling critical to the proper functioning of the extension.
 
 ### Known Issues
 * Because no 100% failsafe regular expression exists for HTML markup, some HTML highlighting will be off. Some tags will fail to get highlighted. In other instances highlighting will be incomplete. There are currently known bugs, and there are improvements that can be made to shorten the gap between what is possible and what is perfect.
