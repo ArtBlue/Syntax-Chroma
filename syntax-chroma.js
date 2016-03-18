@@ -1,17 +1,24 @@
 /* Syntax Chroma JavaScript Library
  * @description Code syntax styling library. Currently supports HTML, CSS, JS, PHP
  * @namespace   SChroma globally, aliased to SC in library
- * @param       {string}    SChroma Main library Class object
- * @param       {object}    {} Empty object explicitly guarantee 'undefined' immutability for pre ES5
+ * @param       {object}    SChroma             Main library Class object
+ * @param       {object}    {}                  Empty object explicitly guarantee 'undefined' immutability for pre ES5
+ * @property    {string}    SC.title            Title of library
+ * @property    {string}    SC.version          Version of library
+ * @property    {string}    SC.codeTags         Tags to be used for colorizing syntax
+ * @property    {number}    SC.indentSpaces     Number of spaces to account for space indentation
+ * @property    {object}    SC.diction          Object of languages and syntax to highlight for each
  * @alpha
  * @author      Arthur Khachatryan
+ * @since       2014-07-01
+ * @updated     2016-03-18
  * @returns     {schroma} The Syntax Chroma object
  */
 ;(function (SC, undefined) {
     "use strict";
 
     SC.title = "Syntax Chroma Library";
-    SC.version = "0.1";
+    SC.version = "0.5";
     SC.codeTags = "code";
     SC.indentSpaces = 4;
 
@@ -55,18 +62,35 @@
 
     /**
      * Chromalize All Objects
-     * @param {Object} obj The UI element object to be styled
-     * @returns {Object}  Returns styled UI elements
+     * @param       {DOMElement}    elem     The DOM element to be styled
+     * @returns     {Object}        Returns styled elements
      * the <code> element has optional features that are triggered from HTML attributes:
-       <code data-lang="JS" data-code-wrapper="1">...</code>
+     *  <code data-lang="JS" data-code-wrapper="1">...</code>
      */
-    function _chromalize(obj) {
-
+    function _chromalize(elem) {
         /** look at the data-lang attribute; if known language and code wrapper is 1, include the code wrappers as well */
-        var codeLang      = obj.getAttribute('data-lang') || 'txt',
-            codeWrapper   = obj.getAttribute('data-code-wrapper'),
-            codeContent   = obj.innerHTML,
-            codeStartBase = codeContent.search(/\S/);
+        var codeLang        = elem.getAttribute('data-lang') || 'txt'
+            , codeWrapper   = elem.getAttribute('data-code-wrapper')
+            , codeContent   = elem.innerHTML
+            , codeStartBase = codeContent.search(/\S/)
+            , codeOpener
+            , codeCloser
+            , indentStr
+            , codeLine
+            , codeSpaceIndented
+            , indent
+            , domOpen
+            , domClose
+            , sPos
+            , ePos
+            , prevLineComment = false
+            , objHtml = '<ol>'
+            , codeLines
+            , i = 0
+            , css_decl_str = /([\w-]*:)|([^"&gt;][^&lt;][-\w\s]*;)/gi  /* CSS declarations */
+            , css_attr_sel = /(\[.*\])/gi                              /* CSS attribute selectors */
+            , opts = {}
+        ;
 
         if (codeStartBase % 2 == 1) { /** if cariage return is counted in the # of chars, or if for some reason an odd number of spaces before code */
             codeStartBase--;          /** make code start position even */
@@ -88,8 +112,6 @@
         /** set up codeWrappers */
         if (typeof codeLang !== 'undefined' && codeLang !== false) {
             if (typeof codeWrapper !== 'undefined' && codeWrapper !== false && codeWrapper ==  1) {
-                var codeOpener,
-                    codeCloser;
                 switch (codeLang) {
                     case "JS":
                         codeOpener = '&lt;script type="text/javascript"&gt;';
@@ -98,6 +120,10 @@
                     case "CSS":
                         codeOpener = '&lt;style type="text/css"&gt;';
                         codeCloser = '&lt;/style&gt;';
+                        opts = {
+                            css_decl_str: css_decl_str
+                            , css_attr_sel: css_attr_sel
+                        }
                         break;
                     case "PHP":
                         codeOpener = '&lt;?php ';
@@ -114,7 +140,7 @@
 
         /** apply code coloring, if code language is known, else just exit */
         if (codeLang) {
-            codeContent = _colorize(codeLang, codeContent);
+            codeContent = _colorize(codeLang, codeContent, opts);
         } else {
             return;
         }
@@ -127,19 +153,8 @@
             codeContent = codeContent.replace(/(&lt;([^&gt;]+)&gt;)/gi, "<span class='html-tag'>$1</span>"); /* regex for ESCAPED HTML */
         }
         /* each row of code is added to array */
-        var codeLines = codeContent.split("\n")
-            , prevLineComment = false
-            , objHtml = '<ol>'
-            , i = 0
-            , indentStr
-            , codeLine
-            , codeSpaceIndented
-            , indent
-            , domOpen
-            , domClose
-            , sPos
-            , ePos
-        ;
+        codeLines = codeContent.split("\n");
+
 
         for (; i < codeLines.length; i++) {
             indentStr = '&nbsp;'.repeat(indent);
@@ -171,7 +186,7 @@
 
                     /** multiline comments
                         comments open and close on same line */
-                    if (codeLine.indexOf("/*") != -1 && codeLine.indexOf("*/") != -1) { 
+                    if (codeLine.indexOf("/*") != -1 && codeLine.indexOf("*/") != -1) {
                         sPos = codeLine.indexOf("/*");
                         // trying to find the location of '*/' on same line, will use line end instead...
                         ePos = codeLines[i].indexOf("*/") + indent + 2; // + 2 to account for the '*/' string itself
@@ -190,27 +205,30 @@
                 }
             }
 
-            if (indent > 0)  objHtml += '<li><span class="line">' + '&nbsp;'.repeat(indent) + codeLine + '</span></li>';
-            else             objHtml += '<li><span class="line">' + codeLine + '</span></li>';
+            if (indent > 0) {
+                objHtml += '<li><span class="line">' + '&nbsp;'.repeat(indent) + codeLine + '</span></li>';
+            } else {
+                objHtml += '<li><span class="line">' + codeLine + '</span></li>';
+            }
 
             indent = 0; /** reset indent for next line */
         }
         objHtml += "</ol>";
-        obj.innerHTML = objHtml;
+        elem.innerHTML = objHtml;
     }
 
     /**
      * Colorize syntax based on language
-     * @param {string} lang Language specification string
-     * @param {string} code The code string
-     * @returns {string} Colorized code string
+     * @param   {string}    lang    Language specification string
+     * @param   {string}    code    The code string
+     * @returns {string}    Colorized code string
      */
-    function _colorize(lang, code) {
+    function _colorize(lang, code, opts) {
         if ((lang == "JS" || lang == "PHP" || lang == "CSS") && SC.diction.lang[lang]) {
             /** colorize keywords */
             var str     = code
                 , keywordStr = SC.diction.lang[lang].keywords.join("|")
-                , keywordReg = new RegExp('('+ keywordStr + ')', 'gi')
+                , keywordReg = new RegExp('(' + keywordStr + ')', 'gi')
                 , newstr  = str.replace(keywordReg, "<span class='keyword'>$1</span>")
             /** colorize methods */
                 , methodStr = SC.diction.lang[lang].methods.join("|")
@@ -218,17 +236,13 @@
                 , newstr  = newstr.replace(methodReg, "<span class='method'>$1</span>")
             /** colorize reserved */
                 , reservedStr = SC.diction.lang[lang].reserved.join("|")
-                , reservedReg = new RegExp('('+ reservedStr + ')', 'gi')
+                , reservedReg = new RegExp('(' + reservedStr + ')', 'gi')
                 , newstr  = newstr.replace(reservedReg, "<span class='reserved'>$1</span>")
             ;
             /** if language is CSS, apply common CSS regexes */
             if (lang == "CSS") {
-                /* CSS declarations */
-                var css_decl_str = /([\w-]*:)|([^"&gt;][^&lt;][-\w\s]*;)/gi;
-                newstr = newstr.replace(css_decl_str, "<span class='css-dec'>$1</span><span class='css-vals'>$2</span>");
-                /* CSS attribute selectors */
-                var css_attr_sel = /(\[.*\])/gi;
-                newstr = newstr.replace(css_attr_sel, "<span class='css-attr-sel'>$1</span>");
+                newstr = newstr.replace(opts.css_decl_str, "<span class='css-dec'>$1</span><span class='css-vals'>$2</span>");
+                newstr = newstr.replace(opts.css_attr_sel, "<span class='css-attr-sel'>$1</span>");
             }
         }
         return newstr || code;
@@ -236,8 +250,8 @@
 
     /**
      * @extends String via prototype
-     * @param {Number} x Number of times to repeat text
-     * @returns {String}    String repeated x number of times
+     * @param   {bumber}    x   Number of times to repeat text
+     * @returns {string}    String repeated x number of times
      */
     String.prototype.repeat = function (x) {
         x = x || 1;
@@ -246,8 +260,8 @@
 
     /**
      * Escape HTML characters
-     * @param   {String}    text    HTML tags
-     * @returns {String}    HTML entities
+     * @param   {string}    text    HTML tags
+     * @returns {string}    HTML entities
      */
     function _escapeHtml(text) {
         return text
@@ -260,10 +274,10 @@
 
     /**
      * Utility function to insert one string into another at the given character position
-     * @param {String} insStr String to be inserted
-     * @param {String} intoStr String to be inserted into
-     * @param {Number} pos Position of where to insert string
-     * @returns {String}  Returns 'intoStr' string inserted with 'insStr'
+     * @param   {string}    insStr      String to be inserted
+     * @param   {string}    intoStr     String to be inserted into
+     * @param   {number}    pos         Position of where to insert string
+     * @returns {string}    Returns 'intoStr' string inserted with 'insStr'
      */
     function _insertStr(insStr, intoStr, pos) {
         var str = [intoStr.slice(0, pos), insStr, intoStr.slice(pos)].join('');
