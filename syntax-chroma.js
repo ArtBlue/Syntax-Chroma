@@ -1,31 +1,34 @@
-/* Syntax Chroma jQuery Extension
- * @namespace SChroma globally, aliased to SC in library
- * @param {String} SChroma Main library Class object
- * @param {Object} {} Empty object explicitly guarantee 'undefined' immutability for pre ES5
- * @returns {Schroma} The Syntax Chroma object
-*/
-;(function ( SC, undefined ) {
+/* Syntax Chroma JavaScript Library
+ * @description Code syntax styling library. Currently supports HTML, CSS, JS, PHP
+ * @namespace   SChroma globally, aliased to SC in library
+ * @param       {string}    SChroma Main library Class object
+ * @param       {object}    {} Empty object explicitly guarantee 'undefined' immutability for pre ES5
+ * @alpha
+ * @author      Arthur Khachatryan
+ * @returns     {schroma} The Syntax Chroma object
+ */
+;(function (SC, undefined) {
     "use strict";
-    
-    SC.title = "Syntax Chroma jQuery Extension";
+
+    SC.title = "Syntax Chroma Library";
     SC.version = "0.1";
     SC.codeTags = "code";
     SC.indentSpaces = 4;
-    
+
     /* Public dictionary object with initial set of languages and scopes. Future versions will allow extending of language and scope */
     SC.diction = {
         /* syntax vocabulary */
-        /* currently supported langiages: HTML, CSS, JS, PHP */
+        /* currently supported languages: HTML, CSS, JS, PHP */
         lang : {
             JS : { /* list of JS keywords with mods: http://www.oreillynet.com/pub/a/javascript/excerpts/learning-javascript/javascript-datatypes-variables.html*/
                 keywords : ['\\&lt;(script)|\&lt;\/(script)','function','return','array','\\%','\\-','\\+','\\=','\\!','\\|','error','void','catch','throw','delete','try','do ','instanceof','console'],
-                
+
                 methods  : ['prototype','break','typeof','window','for',' in ','while','continue','if','else if','else','with','switch','case',
                             'join','slice','new ','finally','\\$','this','object','var ','window','document','default','abstract','enum','short',
                             'boolean','export','interface','static','byte','extends', 'super','char','final','native', 'synchronized','class ',
                             'package','throws','const','goto','private','transient','debugger','implements','protected','volatile','double',
                             'import','public','undefined','false','true','\\d'],
-                
+
                 reserved : ['alert','eval','location','open\\(\\w*\\S*\\)','focus','math','outerHeight','blur','name','parent','boolean','history',
                             'navigator','parseFloat','date','image','number','regExp','document','isNaN','object','status','escape\W','encodeURI\W','length',
                             'onLoad','string','\\"(.*?)\\"']
@@ -52,19 +55,19 @@
 
     /**
      * Chromalize All Objects
-     * @param {Object} obj The UI element object to be styled 
+     * @param {Object} obj The UI element object to be styled
      * @returns {Object}  Returns styled UI elements
      * the <code> element has optional features that are triggered from HTML attributes:
        <code data-lang="JS" data-code-wrapper="1">...</code>
      */
     function _chromalize(obj) {
-        
+
         /** look at the data-lang attribute; if known language and code wrapper is 1, include the code wrappers as well */
-        var codeLang      = obj.attr('data-lang') || 'txt',
-            codeWrapper   = obj.attr('data-code-wrapper'),
-            codeContent   = obj.html(),
+        var codeLang      = obj.getAttribute('data-lang') || 'txt',
+            codeWrapper   = obj.getAttribute('data-code-wrapper'),
+            codeContent   = obj.innerHTML,
             codeStartBase = codeContent.search(/\S/);
-        
+
         if (codeStartBase % 2 == 1) { /** if cariage return is counted in the # of chars, or if for some reason an odd number of spaces before code */
             codeStartBase--;          /** make code start position even */
         }
@@ -72,7 +75,11 @@
         /** trim off the ends so we have no leading or trailing spaces
             is this a modern browser? is trim() part of string prototype? If not, extend it... */
         if (!String.prototype.trim) {
-            String.prototype.trim = function(){
+            /**
+             * Add method to string prototype for browsers that don't natively support it
+             * @return {string} the replaced string
+             */
+            String.prototype.trim = function () {
                 return this.replace(/^\s+|\s+$/g, '');
             };
         }
@@ -83,7 +90,7 @@
             if (typeof codeWrapper !== 'undefined' && codeWrapper !== false && codeWrapper ==  1) {
                 var codeOpener,
                     codeCloser;
-                switch(codeLang) {
+                switch (codeLang) {
                     case "JS":
                         codeOpener = '&lt;script type="text/javascript"&gt;';
                         codeCloser = '&lt;/script&gt;';
@@ -104,14 +111,14 @@
                               codeCloser;
             }
         }
-        
+
         /** apply code coloring, if code language is known, else just exit */
         if (codeLang) {
             codeContent = _colorize(codeLang, codeContent);
         } else {
             return;
         }
-        
+
         /** iterate through custom extended dictionaries, and colorize */
         /** style HTML tags for ALL languages */
         /** keep in mind that the grammar of HTML is too complex for regular expressions to be correct 100% of the time, but here we go... */
@@ -120,15 +127,25 @@
             codeContent = codeContent.replace(/(&lt;([^&gt;]+)&gt;)/gi, "<span class='html-tag'>$1</span>"); /* regex for ESCAPED HTML */
         }
         /* each row of code is added to array */
-        var codeLines = codeContent.split("\n");
-        var prevLineComment = false;
+        var codeLines = codeContent.split("\n")
+            , prevLineComment = false
+            , objHtml = '<ol>'
+            , i = 0
+            , indentStr
+            , codeLine
+            , codeSpaceIndented
+            , indent
+            , domOpen
+            , domClose
+            , sPos
+            , ePos
+        ;
 
-        var objHtml = '<ol>';
-        for (var i = 0; i < codeLines.length; i++) {
-            var indentStr = '&nbsp;'.repeat(indent),
-                codeLine = codeLines[i].replace(/\t/g, indentStr).trim(),
-                codeSpaceIndented = codeLines[i].search(/\S/), /** how many whitespace characters before code */
-                indent = 0;
+        for (; i < codeLines.length; i++) {
+            indentStr = '&nbsp;'.repeat(indent);
+            codeLine = codeLines[i].replace(/\t/g, indentStr).trim();
+            codeSpaceIndented = codeLines[i].search(/\S/); /** how many whitespace characters before code */
+            indent = 0;
             if (codeSpaceIndented - codeStartBase > 0) {
                 indent = codeSpaceIndented - codeStartBase;
             }
@@ -138,27 +155,27 @@
              */
             if (codeLang == "JS" || codeLang == "PHP" || codeLang == "CSS") {
                 // style comments
-                var domOpen = '<span class="comment">';
-                var domClose = '</span>';
+                domOpen = '<span class="comment">';
+                domClose = '</span>';
 
                 if (prevLineComment) {
-                    
-                    if ( codeLine.indexOf("*/") != -1 ) { // comment is being terminated
+
+                    if (codeLine.indexOf("*/") != -1) { // comment is being terminated
                         codeLine = domOpen + codeLine + domClose;
                         prevLineComment = false;
                     } else { // comment continues...
                         codeLine = domOpen + codeLine + domClose;
                     }
-                    
+
                 } else { /** previous line did not open a comment */
-                    
+
                     /** multiline comments
                         comments open and close on same line */
                     if (codeLine.indexOf("/*") != -1 && codeLine.indexOf("*/") != -1) { 
-                        var sPos = codeLine.indexOf("/*");
+                        sPos = codeLine.indexOf("/*");
                         // trying to find the location of '*/' on same line, will use line end instead...
-                        var ePos = codeLines[i].indexOf("*/") + indent + 2; // + 2 to account for the '*/' string itself
-                        var codeLine = _insertStr(domOpen, codeLine, sPos) + domClose;
+                        ePos = codeLines[i].indexOf("*/") + indent + 2; // + 2 to account for the '*/' string itself
+                        codeLine = _insertStr(domOpen, codeLine, sPos) + domClose;
                         prevLineComment = false;
                     // comments open but do NOT close on same line
                     } else if (codeLine.indexOf("/*") != -1 && codeLine.indexOf("*/") == -1) {
@@ -166,7 +183,7 @@
                         prevLineComment = true;
                     // single line comment
                     } else if (codeLine.indexOf("//") != -1) {
-                        var sPos = codeLine.indexOf("//");
+                        sPos = codeLine.indexOf("//");
                         codeLine = _insertStr(domOpen, codeLine, sPos);
                         prevLineComment = false;
                     }
@@ -179,9 +196,9 @@
             indent = 0; /** reset indent for next line */
         }
         objHtml += "</ol>";
-        obj.html(objHtml);
+        obj.innerHTML = objHtml;
     }
-    
+
     /**
      * Colorize syntax based on language
      * @param {string} lang Language specification string
@@ -189,22 +206,21 @@
      * @returns {string} Colorized code string
      */
     function _colorize(lang, code) {
-        
-        if ( (lang == "JS" || lang == "PHP" || lang == "CSS") && SC.diction.lang[lang]) {
+        if ((lang == "JS" || lang == "PHP" || lang == "CSS") && SC.diction.lang[lang]) {
             /** colorize keywords */
-            var str     = code,
-                keywordStr = SC.diction.lang[lang].keywords.join("|"),
-                keywordReg = new RegExp('('+ keywordStr + ')', 'gi'),
-                newstr  = str.replace(keywordReg, "<span class='keyword'>$1</span>");
+            var str     = code
+                , keywordStr = SC.diction.lang[lang].keywords.join("|")
+                , keywordReg = new RegExp('('+ keywordStr + ')', 'gi')
+                , newstr  = str.replace(keywordReg, "<span class='keyword'>$1</span>")
             /** colorize methods */
-            var methodStr = SC.diction.lang[lang].methods.join("|"),
-                methodReg = new RegExp('('+ methodStr + ')', 'gi');
-                newstr  = newstr.replace(methodReg, "<span class='method'>$1</span>");
-
+                , methodStr = SC.diction.lang[lang].methods.join("|")
+                , methodReg = new RegExp('(' + methodStr + ')', 'gi')
+                , newstr  = newstr.replace(methodReg, "<span class='method'>$1</span>")
             /** colorize reserved */
-            var reservedStr = SC.diction.lang[lang].reserved.join("|"),
-                reservedReg = new RegExp('('+ reservedStr + ')', 'gi'),
-                newstr  = newstr.replace(reservedReg, "<span class='reserved'>$1</span>");
+                , reservedStr = SC.diction.lang[lang].reserved.join("|")
+                , reservedReg = new RegExp('('+ reservedStr + ')', 'gi')
+                , newstr  = newstr.replace(reservedReg, "<span class='reserved'>$1</span>")
+            ;
             /** if language is CSS, apply common CSS regexes */
             if (lang == "CSS") {
                 /* CSS declarations */
@@ -217,17 +233,17 @@
         }
         return newstr || code;
     }
-    
+
     /**
      * @extends String via prototype
      * @param {Number} x Number of times to repeat text
-     * @returns {String}    String repeated x number of times 
+     * @returns {String}    String repeated x number of times
      */
-    String.prototype.repeat= function(x){
+    String.prototype.repeat = function (x) {
         x = x || 1;
-        return Array(x+1).join(this);
+        return Array(x + 1).join(this);
     }
-    
+
     /**
      * Escape HTML characters
      * @param   {String}    text    HTML tags
@@ -241,7 +257,7 @@
         .replace(/"/g, "&quot;")
         .replace(/'/g, "&#039;");
     }
-    
+
     /**
      * Utility function to insert one string into another at the given character position
      * @param {String} insStr String to be inserted
@@ -253,12 +269,16 @@
         var str = [intoStr.slice(0, pos), insStr, intoStr.slice(pos)].join('');
         return str;
     }
-    
-    /** jQuery.ready() */
-    $(function() {
-        $(SC.codeTags).each(function( index ) {
-            _chromalize($(this));
-        });
+
+    document.addEventListener("DOMContentLoaded", function(event) {
+        var i = 0
+            , aElems = document.querySelectorAll(SC.codeTags)
+            , nElems = aElems.length
+        ;
+
+        for (; i < nElems; i += 1) {
+            _chromalize(aElems[i]);
+        }
     });
- 
-})( window.SChroma = window.SChroma || {} );
+
+})(window.SChroma = window.SChroma || {});

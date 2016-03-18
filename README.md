@@ -1,12 +1,12 @@
-#Syntax Chroma jQuery Extension
+#Syntax Chroma JavaScript Library
 
-_A modern, lightweight, unobtrusive, themable jQuery syntax highlighter extension_.
+_A modern, lightweight, unobtrusive, themable syntax highlighter extension with no dependencies_.
 
 ## Features
 Syntax Chroma is currently in alpha, so don't be surprised to find various bugs. All currently known issues are listed towards the bottom. Please do report unknown issues to improve Syntax Chroma. That said, there are still good reasons why this particular solution is a good choice for syntax highlighting on web pages. Some of the features that makes it so are as follows:
 * Simple - easy to set up and use
 * Beautiful - code does not need to look ugly
-* Lightweight - only 4.47K
+* Lightweight - < 5K
 * Fast - quick rendering with no highlighting lag due to processing
 * Legible - use of stylistic monospace fonts
 * Semantic - no weird file inclusions, workarounds, odd markup as with other highlighters
@@ -24,7 +24,6 @@ Syntax Chroma utilizes the following:
 * HTML5
 * CSS3
 * JS
-* jQuery (mostly for DOM manipulation)
 
 ## Usage
 
@@ -53,7 +52,6 @@ If `data-lang` is not provided, Syntax Highlighter will assume plain text, and t
 })(jQuery); // ensure $ = jQuery
   </code>
 ````
-Obviously, this being a jQuery extension, it requires the jQuery library in order to work.
 
 ### Options and Customizations
 #### Fonts
