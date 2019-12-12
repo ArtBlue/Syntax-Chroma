@@ -1,4 +1,4 @@
-#Syntax Chroma JavaScript Library
+# Syntax Chroma JavaScript Library
 
 _A modern, lightweight, unobtrusive, themable syntax highlighter extension with no dependencies_.
 
